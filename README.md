@@ -1,5 +1,4 @@
-<p align="center"><a href="https://huggingface.co/meta-llama" target="_blank"><img height="128" src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg"></a></p>
-<p align="center"><a href="https://huggingface.co/meta-llama" target="_blank"><img height="128" src="https://ollama.com/public/ollama.png"></a></p>
+<p align="center"><a href="https://huggingface.co/meta-llama" target="_blank"><img height="128" src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg"></a><a href="https://huggingface.co/meta-llama" target="_blank"><img height="128" src="https://ollama.com/public/ollama.png"></a></p>
 
 # Ollama AI Chatbot
 
