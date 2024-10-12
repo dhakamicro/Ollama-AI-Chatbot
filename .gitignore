@@ -128,3 +128,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+_depc/
+public/_depc/
+Readme_sample.md
+uploads/

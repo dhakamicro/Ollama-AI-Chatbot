@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama AI Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+
+.heartbeat {
+    color: red; /* Optional: Heart color */
+    font-size: 20px; /* Initial size of the icon */
+    animation: heartbeat 1s infinite; /* Apply the animation */
+}
+
+/* Keyframes for heartbeat animation */
+@keyframes heartbeat {
+    0%, 100% {
+        font-size: 20px; /* Initial and final size */
+    }
+    50% {
+        font-size: 25px; /* Increased size at the middle of the animation */
+    }
+}
+
+
+        body {
+            margin-top: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-box {
+            border: 1px solid #ced4da;
+            padding: 10px;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .user-input {
+            margin-top: 20px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message .content {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .message.user .content {
+            background-color: #e2ffe1;
+        }
+
+        .message.ai .content {
+            background-color: #f1f1f1;
+        }
+
+        .code {
+            background-color: #f8f9fa;
+            padding: 5px;
+            font-family: monospace;
+            white-space: pre;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+
+    <style>
+
+textarea {
+    width: 100%;
+    min-height: 50px;
+    resize: none;
+    overflow: hidden;
+  }
+
+  
+        /* Hide the default file input */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Custom button style */
+        .custom-file-label {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Custom text display for file name */
+        .file-name {
+            margin-left: 10px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <h1 class="mt-5">Ollama AI Chat</h1>
+
+        <!-- Chat Box to Display Messages -->
+        <div id="chat-box" class="chat-box"></div>
+        <!-- <div class="input-group">
+            <span class="input-group-text">
+                <input type="file" class="form-control" id="file">
+
+
+            </span>
+            <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
+            <span class="input-group-text">0.00</span>
+        </div> -->
+        <!-- File Upload Form -->
+        <!-- <form id="upload-form" class="mt-3"> -->
+            <!-- <div class="mb-3"> -->
+                <!-- <label for="file" class="form-label">Upload a file</label> -->
+                <!-- <input type="file" class="form-control" id="file" name="file" required> -->
+            <!-- </div> -->
+            <!-- <div class="mb-3"> -->
+                <!-- <button type="submit" class="btn btn-primary">Upload</button> -->
+            <!-- </div> -->
+        <!-- </form> -->
+
+        <!-- Display File Upload Status -->
+        <!-- <div id="file-upload-response" class="mt-3"></div> -->
+
+        <!-- Prompt Form -->
+         <!-- <form id="prompt-form" class="mt-3"> -->
+            <!-- <div class="mb-3"> -->
+                <!-- <label for="prompt" class="form-label">Enter your prompt</label> -->
+                <!-- <input type="text" class="form-control" id="prompt" required> -->
+            <!-- </div> -->
+            <!-- <div class="mb-3">  -->
+                <!-- <button type="submit" class="btn btn-success">Send Prompt</button> -->
+                <!-- <button type="button" id="stop-button" class="btn btn-danger">Stop</button> Stop Button -->
+
+            <!-- </div> -->
+        <!-- </form>  -->
+
+        <!-- Response Section -->
+        <div id="response" class="mt-3"></div>
+    </div>
+
+
+    <div class="row fixed-bottom">
+        <!-- <div class="row"> -->
+
+     
+       
+        <!-- </div> -->
+
+        <!-- <div class="row"> -->
+
+
+        <nav id="leeconsole" class="navbar fixed-bottom navbar-dark bg-dark mt-3">
+          <div class="container-fluid">
+            <div class="collapse mb-5" id="navbarToggleExternalContent">
+                <div class="bg-dark p-4">
+                    <form id="upload-form" class="mt-3">
+                    <span class="file-name text-white h4"></span>
+                  <!-- <h5 class="text-white h4">Collapsed content</h5> -->
+                  <div id="file-upload-response" class="mt-3 text-secondary"></div>
+                  <input type="file" id="file">
+                  <!-- <span class="text-secondary">Toggleable via the navbar brand.</span> -->
+                </form>
+                  
+                </div>
+              </div>
+              <form id="prompt-form" class="mt-3">
+                <div class="row">
+                    
+            <div class="input-group col-12">
+              <span class="input-group-text" aria-expanded="false" aria-label="Atach File">
+                <span class="btn btn-secondary custom-file-label" for="file"><i class="fa fa-paperclip fa-xl" aria-hidden="true"></i>
+                </span>
+              </span>
+
+              <textarea  class="form-control w-100" placeholder="hit your promt here.." aria-label="leeconsole" aria-describedby="fileResultToggle" id="prompt" required></textarea>
+              
+              
+              
+              <span class="input-group-text" aria-expanded="false" aria-label="Prompt AI" >
+                <button class="btn btn-secondary" type="submit"><i class="fa fa-arrow-circle-up fa-xl" aria-hidden="true"></i>
+                </button>              </span>
+
+                
+                <span class="input-group-text"  aria-expanded="false" aria-label="Stop Generation" id="stop-button">
+                    <button class="btn btn-secondary" ><i class="fa fa-stop-circle fa-xl" aria-hidden="true"></i>
+                    </button>              </span>
+                    
+                    
+                    
+                    <span class="input-group-text navbar-toggler d-none"  aria-expanded="false" aria-label="Stop Generation" id="fileResultToggle">
+                    </span>
+                    
+                    
+                </div>
+                </div>
+                
+                </form>
+      
+      
+          </div>
+        </nav>
+    <!-- </div> -->
+      
+      </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/3884a96f07.js" crossorigin="anonymous"></script>
+    
+    <script>
+        const textarea = document.getElementById('prompt');
+      
+        // Auto-resize on input
+        textarea.addEventListener('input', () => {
+          textarea.style.height = 'auto'; // Reset height to auto to recalculate
+          textarea.style.height = `${textarea.scrollHeight}px`; // Set height to match scroll height
+        });
+      
+      
+        const storageKey = 'textareaContent';
+      
+        // Load saved content from localStorage
+        const savedContent = localStorage.getItem(storageKey);
+        if (savedContent) {
+          textarea.value = savedContent;
+          textarea.style.height = `${textarea.scrollHeight}px`; // Adjust height on page load
+        }
+      
+        // Save content to localStorage on input
+        textarea.addEventListener('input', () => {
+          localStorage.setItem(storageKey, textarea.value);
+        });
+      </script>
+    
+ 
+
+    <script>
+        // Get the file input, label, and file name span elements
+        const fileInput = document.getElementById('file');
+        const fileNameDisplay = document.querySelector('.file-name');
+        const fileLabel = document.querySelector('.custom-file-label');
+
+
+                    // Get the collapse element by its ID
+            var collapseElement = document.getElementById('navbarToggleExternalContent');
+
+            // Create a Bootstrap Collapse instance
+            var collapseInstance = new bootstrap.Collapse(collapseElement, {
+                toggle: false // Disable auto-toggle, so we control it manually
+            });
+
+        // Listen for the 'change' event on the file input
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Display the selected file name
+                fileNameDisplay.innerHTML = '<span><i class="fa fa-file-text fa-lg" aria-hidden="true"></i><br>'+file.name+'</span>';
+                collapseInstance.toggle();
+                // Automatically upload the file
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // Simulate the upload process (replace with your actual upload logic)
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.filePath) {
+                            document.getElementById('file-upload-response').innerText = `File uploaded successfully: ${result.filePath}`;
+                        } else {
+                            document.getElementById('file-upload-response').innerText = `File upload failed: ${result.error}`;
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('file-upload-response').innerText = 'File upload failed due to a network error.';
+                    });
+            } else {
+                fileNameDisplay.textContent = 'No file selected';
+            }
+        });
+
+        // When the label is clicked, trigger the file input click event
+        fileLabel.addEventListener('click', () => {
+            fileInput.click();
+        });
+    </script>
+    <script>
+        // Handle file upload
+        document.getElementById('upload-form').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            const fileInput = document.getElementById('file');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                // Send the file to the server
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await response.json();
+
+                // Display the result from the upload
+                if (response.ok) {
+                    document.getElementById('file-upload-response').innerText = `File uploaded successfully: ${result.filePath}`;
+                } else {
+                    document.getElementById('file-upload-response').innerText = `File upload failed: ${result.error}`;
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                document.getElementById('file-upload-response').innerText = 'File upload failed due to a network error.';
+            }
+        });
+
+        // Handle prompt submission
+        document.getElementById('prompt-form').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            const promptInput = document.getElementById('prompt');
+            const prompt = promptInput.value.trim();
+
+            let filePath = '';
+            const uploadResponse = document.getElementById('file-upload-response').innerText;
+
+            if (uploadResponse.includes('File uploaded successfully')) {
+                filePath = uploadResponse.split(': ')[1];
+            }
+
+            if (!prompt) return;
+
+            // Add user message to chat
+            addMessage('user', prompt);
+            promptInput.value = '';
+
+            try {
+                let fullResponse = '';  // Declare fullResponse here
+
+                // Stream AI response
+                const eventSource = new EventSource(`/api/run-ollama?prompt=${encodeURIComponent(prompt)}&filePath=${encodeURIComponent(filePath)}`);
+                let aiMessage = addMessage('ai', '<i class="fa-solid fa-brain heartbeat"></i>');  // Create a placeholder for AI response
+                eventSource.onmessage = function (event) {
+                    if (event.data === '[DONE]') {
+                        eventSource.close();
+                        addMessage('ai', '<hr>'); // Display the full response once done
+                    } else {
+                        fullResponse += event.data + ' ';  // Append incoming data to fullResponse
+                        updateMessage(aiMessage, fullResponse);  // Update the message incrementally
+                    }
+                };
+
+
+                      // Stop Button functionality to close the EventSource and stop streaming
+        document.getElementById('stop-button').addEventListener('click', () => {
+            if (eventSource) {
+                eventSource.close(); // Stop the streaming
+                hideSpinner(); // Hide spinner once stopped
+                addMessage('ai', 'Prompt stopped by the user.');
+            }
+        });
+
+
+            } catch (error) {
+                console.error('Error sending prompt:', error);
+                addMessage('ai', 'Error processing your request due to a network error.');
+            }
+        });
+
+
+
+
+        // Function to add a message to the chat
+        function addMessage(sender, text) {
+            const chatBox = document.getElementById('chat-box');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+
+            const contentElement = document.createElement('span');
+            contentElement.classList.add('content');
+
+            contentElement.innerHTML = formatResponse(text); // Allow HTML for formatting (bold, code, etc.)
+            messageElement.appendChild(contentElement);
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;  // Auto scroll to bottom
+
+            return contentElement;  // Return the content element so it can be updated later
+        }
+
+        // Function to update a message's content (for streaming effect)
+        function updateMessage(contentElement, newText) {
+            contentElement.innerHTML = formatResponse(newText);  // Replace content incrementally without new lines
+        }
+
+        // Stop Button functionality to close the EventSource and stop streaming
+        // document.getElementById('stop-button').addEventListener('click', () => {
+        //     if (eventSource) {
+        //         eventSource.close(); // Stop the streaming
+        //         hideSpinner(); // Hide spinner once stopped
+        //         addMessage('ai', 'Prompt stopped by the user.');
+        //     }
+        // });
+
+
+        // Function to format AI response text (e.g., for code, bold, lists)
+        // function formatResponse(response) {
+        //     // Insert a line break before each numbered bullet
+        //     let formattedResponse = response.replace(/(\d+\.\s)/g, '<br>$1');
+        //     // let formattedResponse = response.replace(/``([\ s \S ]*?)``/g, '<br>$1');
+
+        //     // Replace **text** with <strong>text</strong> for bold formatting
+        //     // formattedResponse = formattedResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        //     // Replace new line characters with <br> tags for line breaks
+        //     formattedResponse = formattedResponse.replace(/\n /g, '<br>');
+        //     // formattedResponse  =  formattedResponse.replace (/^(\d +\.)\s(.*)$/gm, function(match,p1,p2){return  $1$2;});
+        //     // Format code blocks
+        //     // formattedResponse = formattedResponse.replace(/```([^`]+)```/g, '<br><code><pre>$1</pre></code><br>'); // Inline code
+        //     // formattedResponse = formattedResponse.replace(/`` `([^`]+)`` `/g, '<br><code><pre>$1</pre></code><br>'); // Inline code
+        //     // formattedResponse = formattedResponse.replace(/`([^`]+)`/g, '<strong>$1</strong>'); // Inline code
+        //     // formattedResponse = formattedResponse.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>'); // Block code
+        //     // formattedResponse = response.replace(/``([\ s \S ]*?) `` /g , '<br>$1');
+
+        //     return formattedResponse;
+        // }
+
+        function formatResponse(response) {
+            let formattedResponse = response;
+
+            // Line breaks
+            formattedResponse = formattedResponse.replace(/\n/g, '<br/>');
+
+            // Code blocks (indentation)
+            formattedResponse = formattedResponse.replace(/`` `([^`]+)`` `/g,
+                '&lt;div class="code"&gt;$1&lt;/div&gt;');
+
+            formattedResponse = formattedResponse.replace(/```([^`]+)```/g,
+                '&lt;div class="code"&gt;$1&lt;/div&gt;');
+
+            formattedResponse = formattedResponse.replace(/```([^`]+)`` `/g,
+                '&lt;div class="code"&gt;$1&lt;/div&gt;');
+
+            // Bullet points
+            formattedResponse = formattedResponse.replace(/\* (.*)\*/g,
+                '<ul><li>$1</li></ul>');
+
+            // Bold strings
+            formattedResponse = formattedResponse.replace(/__(.+)__/g, '<b>$1</b>');
+            formattedResponse = formattedResponse.replace(/__(.*)__/g, '<b>$1</b>');
+
+            return formattedResponse;
+        }
+    </script>
+</body>
+
+</html>
