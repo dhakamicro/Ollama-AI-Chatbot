@@ -45,26 +45,20 @@ Make sure you have Ollama installed and accessible via the command line. Follow 
 
 - Run the following command to install all required packages:
 
-```npm install
-
-```
+`npm install`
 
 3. **Run the Application**
 
    - Once the dependencies are installed, you can start the server:
 
-   ```npm start
+   `npm start `
 
-   ```
-
-   The server will be running on http://localhost:3000.
+- The server will be running on http://localhost:3000.
 
 4. **Access the Web Interface**
    Open your browser and navigate to:
 
-```http://localhost:3000
-
-```
+`http://localhost:3000`
 
 ## Usage
 
