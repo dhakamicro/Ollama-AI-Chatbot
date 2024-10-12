@@ -1,4 +1,5 @@
 <p align="center"><a href="https://huggingface.co/meta-llama" target="_blank"><img height="128" src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg"></a></p>
+<p align="center"><a href="https://huggingface.co/meta-llama" target="_blank"><img height="128" src="https://ollama.com/public/ollama.png"></a></p>
 
 # Ollama AI Chatbot
 
@@ -42,14 +43,16 @@ Make sure you have Ollama installed and accessible via the command line. Follow 
    ```
 
 2. **Install Dependencies**
-   Run the following command to install all required packages:
 
-   ```npm install
+- Run the following command to install all required packages:
 
-   ```
+```npm install
+
+```
 
 3. **Run the Application**
-   Once the dependencies are installed, you can start the server:
+
+   - Once the dependencies are installed, you can start the server:
 
    ```npm start
 
